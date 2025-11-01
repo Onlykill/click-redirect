@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đang chuyển hướng...</title>
+  <script>
+    // === BƯỚC 1: Cập nhật URL Apps Script của bạn tại đây ===
+    const API_URL = "https://script.google.com/macros/s/AKfycbwK4FuRpTp9dfy2dAHuoW6wKll-BOHxBvL28YDxf4KXF7q4mi6X_BY5xqIxViDDgGSO/exec";
+
+    // === BƯỚC 2: Lấy tham số "to" từ URL, ví dụ ?to=https://abc.com ===
+    const params = new URLSearchParams(window.location.search);
+    const target = params.get("to");
+
+    if (!target) {
+      document.write("<h3>Lỗi: chưa có link đích.</h3>");
+    } else {
+      // Gửi log về Google Sheet
+      fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          link: target,
+          time: new Date().toISOString(),
+          userAgent: navigator.userAgent,
+          referrer: document.referrer
+        })
+      });
+
+      // Chuyển hướng sau 1,5 giây
+      setTimeout(() => {
+        window.location.href = target;
+      }, 1500);
+    }
+  </script>
+</head>
+<body style="font-family:sans-serif;text-align:center;margin-top:20%;">
+  <h2>Đang chuyển hướng, vui lòng chờ...</h2>
+  <p>Nếu không tự chuyển, bấm <a id="link" href="#">vào đây</a>.</p>
+
+  <script>
+    const link = document.getElementById("link");
+    if (target) link.href = target;
+  </script>
+</body>
+</html>
